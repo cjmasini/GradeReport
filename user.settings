@@ -1,0 +1,8 @@
+{
+  "teacher_name": "Connor Masini",
+  "teacher_email": "connor.masini@detroitk12.org",
+  "class_name": "AP Precalculus",
+  "report_filter_enabled": true,
+  "grade_cutoff": 80.0,
+  "custom_message": "Your student is doing great and should keep up the good work"
+}
