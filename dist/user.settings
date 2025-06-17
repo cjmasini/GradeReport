@@ -1,0 +1,9 @@
+{
+  "teacher_name": "Ms. Masini",
+  "teacher_email": "connor.masini@detroitk12.org",
+  "class_name": "AP Precalculus",
+  "report_filter_enabled": true,
+  "grade_cutoff": 70.0,
+  "custom_message": "Most of these assignments can still be turned in for partial credit, but they need to be turned in as soon as possible to avoid losing more points. These missing assignments are listed at the end of this letter.",
+  "language": "es"
+}
