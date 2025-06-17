@@ -10,6 +10,7 @@ def translate(text, target_language="es"):
             "q": text,
             "langpair": f"en|{target_language}"
         }
+        print(f"Translating text: {text} to {target_language}")
 
         response = requests.get(url, params=params)
         response.raise_for_status()

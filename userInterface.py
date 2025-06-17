@@ -6,6 +6,7 @@ from reportGenerator import generate_report
 from settings import Settings
 from filters import ScoreFilter
 from studentSelector import StudentSelector
+from progressBar import ProgressBar
 
 class ReportUI:
     def __init__(self):
@@ -76,6 +77,9 @@ class ReportUI:
         self.log_label = Label(content_frame, text="", font=("Helvetica", 10), bg="#f8f9fa", fg="blue")
         self.log_label.grid(row=5, column=0, columnspan=2, pady=10)
 
+        self.progress_bar = ProgressBar(content_frame, row=6)
+        self.progress_bar.hide() 
+
         filters = []
         if self.settings.report_filter_enabled and self.settings.grade_cutoff is not None:
             filters.append(ScoreFilter(self.settings.grade_cutoff))
@@ -83,6 +87,7 @@ class ReportUI:
         Button(content_frame, text="Choose File", command=lambda: generate_report(
             self.log_label,
             self.settings,
+            self.progress_bar,
             filters
         )).grid(row=4, column=0, pady=10, sticky="e", padx=10)
 
@@ -253,7 +258,7 @@ class ReportUI:
             self.log_label.config(text="Settings saved.")
 
     def open_student_selector(self):
-        selector = StudentSelector(self.log_label, self.settings)
+        selector = StudentSelector(self.log_label, self.settings, self.progress_bar)
         selector.open()
 
 ReportUI().createUI()

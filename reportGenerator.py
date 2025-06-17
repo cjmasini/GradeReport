@@ -80,15 +80,24 @@ def parse_students(filename, log_label, settings, filters=[]):
             students.append(student)
     return students
     
-def generate_report(log_label, settings, filters=[]):
+def generate_report(log_label, settings, progress_bar, filters=[]):
     filename = select_file()
+    progress_bar.show()
+    progress_bar.update(0)
     students = parse_students(filename, log_label, settings, filters)
-    doc = generate_report_for_language(students, log_label, settings, settings.language)
-    save_document(doc, log_label, settings)
-
-def generate_report_for_language(students, log_label, settings, language):
+    progress_bar.update(10)
     doc = setup_document(settings.teacher_email, log_label)
-    letterWriter = LetterWriter(settings.teacher_name, settings.teacher_email, language, settings.custom_message)
+    progress_bar.update(20)
+    doc = generate_report_for_language(doc, students, log_label, settings, settings.language, progress_bar)
+    save_document(doc, log_label, settings)
+    progress_bar.update(100)
+
+def generate_report_for_language(doc, students, log_label, settings, language, progress_bar):
+    progress_bar.show()
+    progress_bar.update(10)
+    log_label["text"] = "Writing and translating letters to {}".format(LANGUAGE_MAP[language])
+    log_label.update()
+    letterWriter = LetterWriter(settings.teacher_name, settings.teacher_email, language, settings.custom_message, progress_bar)
 
     log_label["text"] = "Translating text... This may take up to a minute."
     log_label.update()
@@ -100,6 +109,7 @@ def generate_report_for_language(students, log_label, settings, language):
         run.font.name = 'Arial'
         run.font.size = docx.shared.Pt(12)
         doc.add_page_break()
+
     return doc
 
 def save_document(doc, log_label, settings):
@@ -115,7 +125,7 @@ def save_document(doc, log_label, settings):
     log_label.update()
     os.startfile(output_path)
 
-def generate_report_for_selected(log_label, settings, student_language_pairs: List[Tuple[Student, str]]):
+def generate_report_for_selected(log_label, settings, student_language_pairs: List[Tuple[Student, str]], progress_bar):
     log_label["text"] = "Grouping students by language..."
     log_label.update()
 
@@ -123,13 +133,11 @@ def generate_report_for_selected(log_label, settings, student_language_pairs: Li
     for student, language in student_language_pairs:
         language_grouped_students[language].append(student)
 
-    print(f"Grouped students by language: {language_grouped_students.keys()}")
     doc = setup_document(settings.teacher_email, log_label)
 
     for language, students in language_grouped_students.items():
         log_label["text"] = f"Translating and writing {LANGUAGE_MAP[language]} letters..."
         log_label.update()
-        print(f"Generating report for {language} with {len(students)} students")
-        generate_report_for_language(students, log_label, settings, language)
+        doc = generate_report_for_language(doc, students, log_label, settings, language, progress_bar)
 
     save_document(doc, log_label, settings)

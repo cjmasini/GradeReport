@@ -6,9 +6,10 @@ from settings import Settings
 from language_map import LANGUAGE_MAP, update_language
 
 class StudentSelector:
-    def __init__(self, log_label, settings: Settings):
+    def __init__(self, log_label, settings: Settings, progress_bar):
         self.log_label = log_label
         self.settings = settings
+        self.progress_bar = progress_bar
         self.students = []
         self.selected = {}
         self.languages = {}
@@ -60,7 +61,7 @@ class StudentSelector:
             display_var = tk.StringVar(value=initial_lang)
             lang_menu = ttk.Combobox(row, textvariable=display_var, values=list(LANGUAGE_MAP.values()), width=10)
             lang_menu.pack(side="left", padx=5)
-            display_var.trace_add("write", lambda *_, var=display_var: update_language(self.languages, var, student.name))
+            display_var.trace_add("write", lambda *_, var=display_var, name=student.name: update_language(self.languages, var, name))
 
             cb = tk.Checkbutton(row, variable=self.selected[student.name])
             cb.pack(side="left", padx=5)
@@ -95,5 +96,5 @@ class StudentSelector:
             return
 
         generate_report_for_selected(
-            self.log_label, self.settings, selected_students)
+            self.log_label, self.settings, selected_students, self.progress_bar)
 
